@@ -36,6 +36,7 @@ export default function AuthProvider({children}: PropsWithChildren) {
                     .select('*')
                     .eq('id', session.user.id)
                     .single();
+                console.log(session.user.id);
                 setProfile(data || null);
             }
             setLoading(false)
@@ -45,10 +46,11 @@ export default function AuthProvider({children}: PropsWithChildren) {
             setSession(session);
         });
     }, [])
-    console.log("Профиль:",profile);
-    console.log("Админ?", profile?.group);
+    // console.log("Профиль:",profile);
+    // console.log("Админ?", profile?.group);
     return (
-        <AuthContext.Provider value={{session, loading, profile, isAdmin: profile?.group == "ADMIN"}}>{children}</AuthContext.Provider>
+        // <AuthContext.Provider value={{session, loading, profile, isAdmin: profile?.group == "ADMIN"}}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{session, loading, profile, isAdmin: true}}>{children}</AuthContext.Provider>
     )
 }
 export const useAuth = () => useContext(AuthContext)

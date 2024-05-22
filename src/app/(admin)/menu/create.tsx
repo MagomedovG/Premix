@@ -4,7 +4,8 @@ import UIButton from "@/src/components/UIButton";
 import {defaultImage} from "@/assets/data/products";
 import {Colors} from "@/constants/Colors";
 import * as ImagePicker from 'expo-image-picker';
-import {Stack, useLocalSearchParams} from "expo-router";
+import {Stack, useLocalSearchParams, useRouter} from "expo-router";
+import {useInsertProduct} from "@/src/api/products";
 
 const CreateProductScreen = () => {
     const [name, setName] = useState('')
@@ -12,8 +13,13 @@ const CreateProductScreen = () => {
     const [image, setImage] = useState<string | null>(null)
     const [errors, setErrors] = useState('')
 
+    const router=useRouter()
+
     const { id } = useLocalSearchParams()
     const isUpdating = !!id
+
+    const { mutate: insertProduct } = useInsertProduct()
+
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -72,6 +78,17 @@ const CreateProductScreen = () => {
         if (!validateInput()){
             return
         }
+
+        insertProduct(
+            { name, price: parseFloat(price), image },
+            {
+                onSuccess: () => {
+                    resetFields();
+                    router.back();
+                },
+            }
+        );
+        console.warn('Create')
         resetFields()
     }
     const onDelete = () => {
